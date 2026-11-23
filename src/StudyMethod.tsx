@@ -14,7 +14,7 @@ const events = [
 const copy = {
   kicker: 'Test plan',
   title: 'How we would test it on Vital',
-  intro: 'Split eligible Vital Pro page visitors 50/50 and keep each person in the same group. Test whether a short comparison by the price helps shoppers choose and raises revenue per visitor. Both versions keep the same model links, prices and checkout.',
+  intro: 'Split eligible Vital Pro page visitors 50/50 and keep each person in the same group. Test whether a comparison by the price helps shoppers choose and raises revenue per visitor. Both versions let shoppers switch models and use the same prices and checkout.',
   metrics: [
     { heading: 'What decides the test', body: 'Sales from both Pro models divided by all assigned visitors. If a shopper clicks through and buys the Pro 2.0, that sale counts toward their original group.' },
     { heading: 'What explains the result', body: 'Check purchase rate, which model sold, and whether returns or contribution margin got worse.' },

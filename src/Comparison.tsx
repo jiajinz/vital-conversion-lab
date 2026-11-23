@@ -1,6 +1,9 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
-import { devices, listedDimensions, priceDifference } from './catalog'
+import { comparisonSections, devices, priceDifference } from './catalog'
+
+const models = ['pro', 'pro2'] as const
+type Model = (typeof models)[number]
 
 const copy = {
   kicker: 'Vital page prototype',
@@ -9,25 +12,15 @@ const copy = {
   groupLabel: 'Choose a page version',
   current: 'Current page',
   proposed: 'Proposed page',
-  imageLabel: 'Concept image of a tabletop red light panel',
   imageNote: 'Concept image',
   productType: 'Tabletop red light panel',
-  wavelengths: `${devices.pro.wavelengths} wavelengths`,
-  timer: 'Automatic shutoff after 10 minutes',
   stand: 'Tabletop stand included',
   addToCart: 'Add to cart',
-  added: 'Vital Pro added to the demo cart',
-  compare: 'Compare with Vital Pro 2.0',
-  summary: `For $${priceDifference} more, get touchscreen presets and ${devices.pro2.wavelengths} wavelengths. Same panel size.`,
+  upgrade: `For $${priceDifference} more, get touchscreen presets and ${devices.pro2.wavelengths} wavelengths. Same panel size.`,
+  baseModel: `Save $${priceDifference} with ${devices.pro.wavelengths} wavelengths and a ${devices.pro.timerMinutes} minute timer. Same panel size.`,
   compareLabel: 'Vital Pro and Vital Pro 2.0 comparison',
-  rowPrice: 'Price',
-  rowControls: 'Controls',
-  rowWavelengths: 'Wavelengths',
-  proControls: devices.pro.controls,
-  pro2Controls: devices.pro2.controls,
-  common: `Both panels measure ${listedDimensions} and offer targeted coverage.`,
-  viewPro2: 'View Vital Pro 2.0',
-  caption: 'This demo recreates the Vital Pro purchase area. The original model links and full device comparison are available in both versions.',
+  specNote: 'Prices and wavelengths follow Vital’s individual product pages.',
+  caption: 'This prototype starts on the Vital Pro purchase area. Use the model buttons to preview either product.',
   source: 'View the live Vital Pro page',
 } as const
 
@@ -36,13 +29,29 @@ const fullComparison = 'https://cdn.shopify.com/s/files/1/0637/6973/9375/files/f
 export default function Comparison() {
   const content = copy
   const [variant, setVariant] = useState<'a' | 'b'>('a')
+  const [model, setModel] = useState<Model>('pro')
   const [added, setAdded] = useState(false)
+  const modelSwitcher = useRef<HTMLDivElement>(null)
   const isProposed = variant === 'b'
+  const device = devices[model]
+  const otherModel = model === 'pro' ? 'pro2' : 'pro'
+  const otherDevice = devices[otherModel]
 
   function chooseVariant(value: 'a' | 'b') {
     if (value === variant) return
     setVariant(value)
     setAdded(false)
+  }
+
+  function chooseModel(value: Model) {
+    if (value === model) return
+    setModel(value)
+    setAdded(false)
+  }
+
+  function viewOtherModel() {
+    chooseModel(otherModel)
+    modelSwitcher.current?.querySelector<HTMLButtonElement>(`button[value="${otherModel}"]`)?.focus()
   }
 
   return (
@@ -63,59 +72,64 @@ export default function Comparison() {
       <div id="prototype-panel" className="comparison-frame">
         <div className="comparison-mock prototype-buybox">
           <figure className="prototype-image">
-            <div className="prototype-image-crop">
-              <img src={`${import.meta.env.BASE_URL}panel-study.jpg`} alt={content.imageLabel} width={1672} height={941} loading="lazy" />
+            <div className="prototype-image-crop" data-model={model}>
+              <img src={`${import.meta.env.BASE_URL}panel-study.jpg`} alt={`Concept illustration for ${device.name}`} width={1672} height={941} loading="lazy" />
             </div>
             <figcaption>{content.imageNote}</figcaption>
           </figure>
           <div className="prototype-product">
-            <div className="comparison-mock-head">
+            <div className="comparison-mock-head" aria-live="polite" aria-atomic="true">
               <div>
                 <p>{content.productType}</p>
-                <h3>{devices.pro.name}</h3>
+                <h3>{device.name}</h3>
               </div>
-              <strong className="prototype-price">${devices.pro.price}</strong>
+              <strong className="prototype-price">${device.price}</strong>
             </div>
-            <div className="prototype-models" role="group" aria-label="Models">
-              <span aria-current="page">Pro 1.0</span>
-              <a href={devices.pro2.source} target="_blank" rel="noreferrer">Pro 2.0</a>
+            <div ref={modelSwitcher} className="prototype-models" role="group" aria-label="Models">
+              {models.map(key => (
+                <button key={key} type="button" value={key} aria-pressed={model === key} onClick={() => chooseModel(key)}>
+                  {devices[key].model}
+                </button>
+              ))}
               <a className="prototype-full-comparison" href={fullComparison} target="_blank" rel="noreferrer">Compare devices</a>
             </div>
             {isProposed && (
-              <details className="prototype-compare">
+              <details key={model} className="prototype-compare">
                 <summary>
-                  <span>{content.compare}</span>
-                  <span className="prototype-compare-price">${devices.pro2.price}</span>
+                  <span>Compare with {otherDevice.name}</span>
+                  <span className="prototype-compare-price">${otherDevice.price}</span>
                   <ChevronDown size={17} aria-hidden="true" />
-                  <small>{content.summary}</small>
+                  <small>{model === 'pro' ? content.upgrade : content.baseModel}</small>
                 </summary>
                 <div className="prototype-compare-content">
                   <table className="comparison-table" aria-label={content.compareLabel}>
                     <thead>
-                      <tr><td></td><th scope="col">Pro</th><th scope="col">Pro 2.0</th></tr>
+                      <tr><th scope="col">Feature</th><th scope="col">{devices.pro.model}</th><th scope="col">{devices.pro2.model}</th></tr>
                     </thead>
-                    <tbody>
-                      <tr><th scope="row">{content.rowPrice}</th><td>${devices.pro.price}</td><td>${devices.pro2.price}</td></tr>
-                      <tr><th scope="row">{content.rowControls}</th><td>{content.proControls}</td><td>{content.pro2Controls}</td></tr>
-                      <tr><th scope="row">{content.rowWavelengths}</th><td>{devices.pro.wavelengths}</td><td>{devices.pro2.wavelengths}</td></tr>
-                    </tbody>
+                    {comparisonSections.map(({ heading, rows }) => (
+                      <tbody key={heading}>
+                        <tr className="comparison-table-group"><th colSpan={3} scope="rowgroup">{heading}</th></tr>
+                        {rows.map(([label, pro, pro2]) => (
+                          <tr key={label}><th scope="row">{label}</th><td>{pro}</td><td>{pro2}</td></tr>
+                        ))}
+                      </tbody>
+                    ))}
                   </table>
-                  <p>{content.common}</p>
-                  <div className="comparison-product-links">
-                    <a href={devices.pro2.source} target="_blank" rel="noreferrer">{content.viewPro2}</a>
-                  </div>
+                  <p>{content.specNote}</p>
+                  <button className="comparison-product-link" type="button" onClick={viewOtherModel}>View {otherDevice.name}</button>
                 </div>
               </details>
             )}
             <ul className="comparison-feature-list">
-              <li>{content.wavelengths}</li>
-              <li>{content.timer}</li>
+              <li>{device.wavelengths} wavelengths</li>
+              {model === 'pro2' && <li>Touchscreen with preset programs</li>}
+              <li>Automatic shutoff after {device.timerMinutes} minutes</li>
               <li>{content.stand}</li>
             </ul>
             <button className="primary-link prototype-cart-button" type="button" onClick={() => setAdded(true)}>
               {content.addToCart}
             </button>
-            <p className="prototype-cart-feedback" role="status">{added ? content.added : ''}</p>
+            <p className="prototype-cart-feedback" role="status">{added ? `${device.name} added to the demo cart` : ''}</p>
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ Jessica Goldman reports that a comparison of Theragun Elite and PRO raised reven
 
 ## Prototype and measurement
 
-A and B recreate the Vital Pro purchase area with the same price, model links, full comparison link, and demo Add to cart button. B shows what the extra $120 buys and lets shoppers open a short comparison in place or continue to the Pro 2.0 page.
+A and B start on the Vital Pro purchase area. Shoppers can switch models inside the demo, open Vital’s full comparison chart, and add the selected model to a demo cart. B shows what the extra $120 buys and lets shoppers open a more detailed comparison of the two Pro models. Prices and wavelength values follow the individual product pages.
 
 The revenue model starts with 10,000 monthly Vital Pro page visitors, a 2% purchase rate across both models, and 20% Pro 2.0 orders. Assuming one device per order at list price, that is $100,600 per month. A shift from 20% to 30% Pro 2.0 orders at the same purchase rate adds $2,400. A 3% relative lift in the purchase rate with Pro 2.0 share dropping to 5% produces six more orders and $690 less revenue. The figures are hypothetical and exclude tax, discounts, margins, returns and changes in traffic.
 

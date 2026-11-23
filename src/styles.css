@@ -120,13 +120,16 @@ h3 { font-size: clamp(1.3rem, 2.1vw, 1.75rem); line-height: 1.15; letter-spacing
 .prototype-switcher button[aria-pressed='true'] { background: var(--white); border-color: var(--line); box-shadow: 0 1px 3px #31194412; }
 .prototype-switcher button:hover { color: var(--accent); }
 .prototype-buybox { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(19px, 4vw, 48px); align-items: start; }
-.prototype-image-crop { position: relative; isolation: isolate; overflow: hidden; width: min(100%, 440px); margin-inline: auto; aspect-ratio: .96; background: #eae0e9; border-radius: 9px; }
-.prototype-image img { position: absolute; display: block; width: auto; max-width: none; height: 132%; left: 50%; top: -14%; transform: translateX(-69.5%); }
+.prototype-image-crop { position: relative; isolation: isolate; overflow: hidden; width: min(100%, 360px); margin-inline: auto; aspect-ratio: .76; background: #eae0e9; border-radius: 9px; }
+.prototype-image img { position: absolute; display: block; width: auto; max-width: none; height: 132%; left: 50%; top: -14%; transform: translateX(-34%); }
+.prototype-image-crop[data-model='pro2'] img { transform: translateX(-64.5%); }
 .prototype-image figcaption { text-align: center; margin-top: 5px; font-size: .74rem; color: var(--muted); }
 .prototype-product { min-width: 0; }
 .prototype-models { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-block: 11px; font-size: .85rem; font-weight: 700; }
 .prototype-models > * { display: inline-flex; align-items: center; min-height: 42px; padding-inline: 10px; border: 1px solid var(--line); border-radius: 6px; }
-.prototype-models [aria-current] { background: var(--lilac); }
+.prototype-models button { background: var(--white); color: var(--ink); cursor: pointer; }
+.prototype-models button:hover { color: var(--accent); }
+.prototype-models [aria-pressed='true'] { background: var(--lilac); }
 .prototype-models > .prototype-full-comparison { border-color: transparent; padding-inline: 5px; color: var(--accent-dark); }
 .prototype-cart-button { justify-content: center; width: 100%; margin-top: 15px; border: 0; cursor: pointer; }
 .prototype-cart-feedback { min-height: 1.6em; margin-top: 3px; font-size: .84rem; color: var(--accent-dark); }
@@ -139,12 +142,13 @@ h3 { font-size: clamp(1.3rem, 2.1vw, 1.75rem); line-height: 1.15; letter-spacing
 .prototype-compare[open] summary svg { transform: rotate(180deg); }
 .prototype-compare-content { border-top: 1px solid #e0d3e8; padding: 10px 12px; }
 .prototype-compare-content p { color: var(--muted); margin-top: 5px; font-size: .86rem; }
-.comparison-table { width: 100%; border-collapse: collapse; margin-top: 9px; font-size: .82rem; text-align: left; line-height: 1.28; }
-.comparison-table td, .comparison-table th { border-bottom: 1px solid #e5d9ec; padding: 7px 4px; vertical-align: top; overflow-wrap: break-word; }
+.comparison-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-top: 3px; font-size: .82rem; text-align: left; line-height: 1.35; }
+.comparison-table td, .comparison-table th { border-bottom: 1px solid #e5d9ec; padding: 7px 4px; vertical-align: top; overflow-wrap: anywhere; }
+.comparison-table thead th:first-child { width: 38%; }
 .comparison-table th:last-child, .comparison-table td:last-child { padding-right: 0; }
-.comparison-table tbody th { font-weight: 600; color: var(--muted); }
-.comparison-product-links { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 6px; }
-.comparison-product-links a { display: inline-flex; align-items: center; min-height: 35px; color: var(--accent-dark); font-size: .84rem; font-weight: 700; text-underline-offset: 3px; }
+.comparison-table tbody th[scope='row'] { font-weight: 600; color: var(--muted); }
+.comparison-table-group th { background: var(--lilac); color: var(--accent-dark); }
+.comparison-product-link { min-height: 44px; padding: 0; border: 0; background: transparent; color: var(--accent-dark); font-size: .84rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .comparison-caption { margin-top: 11px; color: var(--muted); font-size: .86rem; line-height: 1.55; }
 .impact-fields legend { font-size: .91rem; font-weight: 700; margin-bottom: 8px; }
 

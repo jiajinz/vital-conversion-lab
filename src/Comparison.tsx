@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
-import { comparisonSections, devices, priceDifference } from './catalog'
+import { comparisonRows, devices, priceDifference } from './catalog'
 
 const models = ['pro', 'pro2'] as const
 type Model = (typeof models)[number]
@@ -16,10 +16,9 @@ const copy = {
   productType: 'Tabletop red light panel',
   stand: 'Tabletop stand included',
   addToCart: 'Add to cart',
-  upgrade: `For $${priceDifference} more, get touchscreen presets and ${devices.pro2.wavelengths} wavelengths. Same panel size.`,
-  baseModel: `Save $${priceDifference} with ${devices.pro.wavelengths} wavelengths and a ${devices.pro.timerMinutes} minute timer. Same panel size.`,
+  upgrade: `For $${priceDifference} more, Pro 2.0 adds blue and yellow light and touchscreen presets. Same panel size.`,
+  baseModel: `Save $${priceDifference} with Pro if you want red and near infrared light with a simple timer. Same panel size.`,
   compareLabel: 'Vital Pro and Vital Pro 2.0 comparison',
-  specNote: 'Prices and wavelengths follow Vital’s individual product pages.',
   caption: 'This prototype starts on the Vital Pro purchase area. Use the model buttons to preview either product.',
   source: 'View the live Vital Pro page',
 } as const
@@ -31,6 +30,7 @@ export default function Comparison() {
   const [variant, setVariant] = useState<'a' | 'b'>('a')
   const [model, setModel] = useState<Model>('pro')
   const [added, setAdded] = useState(false)
+  const [comparisonOpen, setComparisonOpen] = useState(false)
   const modelSwitcher = useRef<HTMLDivElement>(null)
   const isProposed = variant === 'b'
   const device = devices[model]
@@ -41,12 +41,14 @@ export default function Comparison() {
     if (value === variant) return
     setVariant(value)
     setAdded(false)
+    setComparisonOpen(false)
   }
 
   function chooseModel(value: Model) {
     if (value === model) return
     setModel(value)
     setAdded(false)
+    setComparisonOpen(false)
   }
 
   function viewOtherModel() {
@@ -91,34 +93,37 @@ export default function Comparison() {
                   {devices[key].model}
                 </button>
               ))}
-              <a className="prototype-full-comparison" href={fullComparison} target="_blank" rel="noreferrer">Compare devices</a>
+              {isProposed ? (
+                <button
+                  className="prototype-compare-trigger"
+                  type="button"
+                  aria-expanded={comparisonOpen}
+                  aria-controls="model-comparison"
+                  onClick={() => setComparisonOpen(open => !open)}
+                >
+                  Compare devices <ChevronDown size={15} aria-hidden="true" />
+                </button>
+              ) : (
+                <a className="prototype-compare-trigger" href={fullComparison} target="_blank" rel="noreferrer">Compare devices</a>
+              )}
             </div>
             {isProposed && (
-              <details key={model} className="prototype-compare">
-                <summary>
-                  <span>Compare with {otherDevice.name}</span>
-                  <span className="prototype-compare-price">${otherDevice.price}</span>
-                  <ChevronDown size={17} aria-hidden="true" />
-                  <small>{model === 'pro' ? content.upgrade : content.baseModel}</small>
-                </summary>
-                <div className="prototype-compare-content">
+              <>
+                <p className="prototype-upgrade">{model === 'pro' ? content.upgrade : content.baseModel}</p>
+                <div id="model-comparison" className="prototype-compare-content" hidden={!comparisonOpen}>
                   <table className="comparison-table" aria-label={content.compareLabel}>
                     <thead>
                       <tr><th scope="col">Feature</th><th scope="col">{devices.pro.model}</th><th scope="col">{devices.pro2.model}</th></tr>
                     </thead>
-                    {comparisonSections.map(({ heading, rows }) => (
-                      <tbody key={heading}>
-                        <tr className="comparison-table-group"><th colSpan={3} scope="rowgroup">{heading}</th></tr>
-                        {rows.map(([label, pro, pro2]) => (
-                          <tr key={label}><th scope="row">{label}</th><td>{pro}</td><td>{pro2}</td></tr>
-                        ))}
-                      </tbody>
-                    ))}
+                    <tbody>
+                      {comparisonRows.map(([label, pro, pro2]) => (
+                        <tr key={label}><th scope="row">{label}</th><td>{pro}</td><td>{pro2}</td></tr>
+                      ))}
+                    </tbody>
                   </table>
-                  <p>{content.specNote}</p>
                   <button className="comparison-product-link" type="button" onClick={viewOtherModel}>View {otherDevice.name}</button>
                 </div>
-              </details>
+              </>
             )}
             <ul className="comparison-feature-list">
               <li>{device.wavelengths} wavelengths</li>
